@@ -7,8 +7,10 @@ function mdExtraExtended() {
 
      $("dt, dd, li, th, td, img, blockquote, p").each(function() {
           elems = $(this).first().html();
-          start = elems.indexOf("{literal}{{/literal}");
-          end = elems.indexOf("{literal}}{/literal}");
+          // start = elems.indexOf("{literal}{{/literal}"); // Applicable if working with Smarty template engine.
+          // end = elems.indexOf("{literal}}{/literal}"); // Applicable if working with Smarty template engine.
+          start = elems.indexOf("{"); // Applicable if working with Smarty template engine.
+          end = elems.indexOf("}"); // Applicable if working with Smarty template engine.
           if (start != -1 && end != -1) {
                classesToAdd = elems.substr(start+1, end-start-1).replace(/\./g, "");
                switch ($(this).prop("tagName")) {
