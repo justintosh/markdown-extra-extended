@@ -3,7 +3,9 @@ function mdExtraExtended() {
      var elems;
      var start;
      var end;
+     var splitedStr;
      var classesToAdd;
+     var idToAdd;
 
      $("dt, dd, li, th, td, img, blockquote, p").each(function() {
           elems = $(this).first().html();
