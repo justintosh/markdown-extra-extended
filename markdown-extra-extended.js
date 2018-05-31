@@ -12,27 +12,62 @@ function mdExtraExtended() {
           start = elems.indexOf("{"); // Applicable if working with Smarty template engine.
           end = elems.indexOf("}"); // Applicable if working with Smarty template engine.
           if (start != -1 && end != -1) {
-               classesToAdd = elems.substr(start+1, end-start-1).replace(/\./g, "");
-               switch ($(this).prop("tagName")) {
-                    case "P":
-                    case "LI":
-                    case "DT":
-                    case "DD":
-                    case "BLOCKQUOTE":
-                         $(this).addClass(classesToAdd);
-                         break;
-                    case "TD":
-                         $(this).parent().addClass(classesToAdd); // If the class texts are added to the table body, apply the classes to the current table row.
-                         break;
-                    case "IMG":
-                         $(this).closest("figure").addClass(classesToAdd); // If the class texts are added to the table body, apply the classes to the current table row.
-                         break;
-                    case "TH":
-                         $(this).closest("table").addClass(classesToAdd); // If the class texts are added to table header, apply the classes to the entire table.
-                         break;
-                    default:
-                         break;
+               splitedStr = elems.substr(start+1, end-start-1).split (" ");
+               for (var i=0;i<splitedStr.length;i++) {
+                    if (splitedStr[i][0]==".") {
+                         classesToAdd +=  splitedStr[i].replace(/\./g, "") + " ";
+                    } else if (splitedStr[i][0]=="#") {
+                         idToAdd += splitedStr[i].replace(/\#/g, "") + " ";
+                    }
                }
-               $(this).first().html(elems.replace(elems.substr(start, end-start+1), "").trim()); // Removes the class texts and trims the string to remove the extra spaces before and after the string if available.
           }
+          // Trims the left and right of the string to remove unwanted spaces.
+          classesToAdd = classesToAdd.trim();
+          idToAdd = idToAdd.trim();
+
+          switch ($(this).prop("tagName")) {
+               case "P":
+               case "LI":
+               case "DT":
+               case "DD":
+               case "BLOCKQUOTE":
+                    if (classesToAdd!="") {
+                         $(this).addClass(classesToAdd);
+                    }
+                    if (idToAdd!="") {
+                         $(this).attr('id', idToAdd);
+                    }
+                    break;
+               case "TD":
+                    // If the id and class texts are added to the table body, apply the classes to the current table row.
+                    if (classesToAdd!="") {
+                         $(this).parent().addClass(classesToAdd);
+                    }
+                    if (idToAdd!="") {
+                         $(this).parent().attr('id', idToAdd);
+                    }
+                    break;
+               case "IMG":
+                    // If the id and class texts are added to the table body, apply the classes to the current table row.
+                    if (classesToAdd!="") {
+                         $(this).closest("figure").addClass(classesToAdd);
+                    }
+                    if (idToAdd!="") {
+                         $(this).closest("figure").attr('id', idToAdd);
+                    }
+                    break;
+               case "TH":
+                    // If the id and class texts are added to table header, apply the classes to the entire table.
+                    if (classesToAdd!="") {
+                         $(this).closest("table").addClass(classesToAdd);
+                    }
+                    if (idToAdd!="") {
+                         $(this).closest("table").attr('id', idToAdd);
+                    }
+                    break;
+               default:
+                    break;
+          }
+          $(this).first().html(elems.replace(/\{literal}{{/literal}.+{literal}}{/literal}/i,""));  // Removes the id and class texts.
      });
+}
